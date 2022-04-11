@@ -79,17 +79,8 @@ function startVideoProcess() {
   cap = new cv.VideoCapture(video);
   faces = new cv.RectVector();
   classifier = new cv.CascadeClassifier();
-
-  let faceCascadeFile = 'haarcascade_frontalface_default.xml'; // path to xml
-
-  // use createFileFromUrl to "pre-build" the xml
-  utils.createFileFromUrl(faceCascadeFile, faceCascadeFile, () => {
-      console.log(faceCascadeFile);
-      classifier.load(faceCascadeFile); // in the callback, load the cascade from file 
-      setTimeout(processFaceVideo, 0);
-  });
-  console.log(classifier);
-  
+  classifier.load('haarcascade_frontalface_default.xml');
+  setTimeout(processFaceVideo, 0);
 }
 const FPS = 30;
 
@@ -159,7 +150,6 @@ const rendering = function() {
     camera.position.x = x/320 * 6 - 3;
     camera.position.y = (1 - y/240) * 6 - 3;
     let area = 1- (faceWidth * faceHeight)/19200;
-    console.log(area);
     camera.position.z = 2 + area*3;
     camera.lookAt(box.position);
     renderer.render(scene, camera);

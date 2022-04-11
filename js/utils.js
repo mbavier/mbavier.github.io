@@ -22,7 +22,11 @@ function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
                     onloadCallback();
                 } else {
                     cv['onRuntimeInitialized']=()=>{
-                        console.log(cv.getBuildInformation());
+                        //console.log(cv.getBuildInformation());
+                        let faceCascadeFile = 'haarcascade_frontalface_default.xml'; // path to xml
+                        this.createFileFromUrl(faceCascadeFile, faceCascadeFile, () => {
+                            
+                        });
                         onloadCallback();
                     }
                 }
@@ -34,6 +38,7 @@ function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
         script.src = OPENCV_URL;
         let node = document.getElementsByTagName('script')[0];
         node.parentNode.insertBefore(script, node);
+        
     };
 
     this.createFileFromUrl = function(path, url, callback) {

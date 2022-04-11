@@ -4,6 +4,8 @@ let utils = new Utils('errorMessage');
 
 //utils.loadCode('indexCode', 'codeEditor');
 
+
+
 let streaming = false;
 let videoInput = document.getElementById('videoInput');
 let startAndStop = document.getElementById('startAndStop');
