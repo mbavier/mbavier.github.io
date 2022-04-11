@@ -2,7 +2,7 @@ function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
     let self = this;
     this.errorOutput = document.getElementById(errorOutputId);
 
-    const OPENCV_URL = 'opencv.js';
+    const OPENCV_URL = './js/opencv.js';
     this.loadOpenCv = function(onloadCallback) {
         let script = document.createElement('script');
         script.setAttribute('async', '');
@@ -106,7 +106,7 @@ function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
     this.loadCode = function(scriptId, textAreaId) {
         let scriptNode = document.getElementById(scriptId);
         //let textArea = document.getElementById(textAreaId);
-        if (scriptNode.type !== 'text/code-snippet') {
+        if (scriptNode.type !== 'text/javascript') {
             throw Error('Unknown code snippet type');
         }
         //textArea.value = scriptNode.text.replace(/^\n/, '');
