@@ -105,11 +105,11 @@ function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
 
     this.loadCode = function(scriptId, textAreaId) {
         let scriptNode = document.getElementById(scriptId);
-        let textArea = document.getElementById(textAreaId);
-        if (scriptNode.type !== 'text/javascript') {
+        //let textArea = document.getElementById(textAreaId);
+        if (scriptNode.type !== 'text/code-snippet') {
             throw Error('Unknown code snippet type');
         }
-        textArea.value = scriptNode.text.replace(/^\n/, '');
+        //textArea.value = scriptNode.text.replace(/^\n/, '');
     };
 
     this.addFileInputHandler = function(fileInputId, canvasId) {

@@ -1,6 +1,6 @@
 let utils = new Utils('errorMessage');
 
-utils.loadCode('codeSnippet', 'codeEditor');
+utils.loadCode('indexCode', 'codeEditor');
 
 let streaming = false;
 let videoInput = document.getElementById('videoInput');
