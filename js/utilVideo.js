@@ -1,6 +1,8 @@
 let utils = new Utils('errorMessage');
 
-utils.loadCode('indexCode', 'codeEditor');
+
+
+//utils.loadCode('indexCode', 'codeEditor');
 
 let streaming = false;
 let videoInput = document.getElementById('videoInput');
@@ -23,6 +25,8 @@ function onVideoStarted() {
     startAndStop.innerText = 'Stop';
     videoInput.width = videoInput.videoWidth;
     videoInput.height = videoInput.videoHeight;
+
+
     startVideoProcess();
 }
 
