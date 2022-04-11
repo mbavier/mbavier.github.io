@@ -106,7 +106,7 @@ function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
     this.loadCode = function(scriptId, textAreaId) {
         let scriptNode = document.getElementById(scriptId);
         let textArea = document.getElementById(textAreaId);
-        if (scriptNode.type !== 'text/code-snippet') {
+        if (scriptNode.type !== 'text/javascript') {
             throw Error('Unknown code snippet type');
         }
         textArea.value = scriptNode.text.replace(/^\n/, '');
