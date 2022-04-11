@@ -23,7 +23,7 @@ function onVideoStarted() {
     startAndStop.innerText = 'Stop';
     videoInput.width = videoInput.videoWidth;
     videoInput.height = videoInput.videoHeight;
-    utils.executeCode('codeEditor');
+    startVideoProcess();
 }
 
 function onVideoStopped() {
