@@ -9,7 +9,7 @@ function startVideoProcess() {
   cap = new cv.VideoCapture(video);
   faces = new cv.RectVector();
   classifier = new cv.CascadeClassifier();
-  let faceCascadeFile = '../opencvFiles/haarcascade_frontalface_default.xml';
+  let faceCascadeFile = 'https://raw.githubusercontent.com/mbavier/opencvWeb/87facc3da85d88da2dbf34f409b59a07d5873ab7/opencvFiles/haarcascade_frontalface_default.xml';
 
   utils.createFileFromUrl(faceCascadeFile, faceCascadeFile, () => {
     classifier.load(faceCascadeFile);
