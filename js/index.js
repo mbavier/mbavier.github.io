@@ -124,10 +124,11 @@ function processFaceVideo() {
         src.copyTo(dst);
         cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
         // detect faces.
-        classifier.detectMultiScale(gray, faces, 1.1, 3, 0);
+        classifier.detectMultiScale(gray, faces, 1.1, 5, 0);
         // draw faces.
         for (let i = 0; i < faces.size(); ++i) {
             let face = faces.get(i);
+            console.log(face);
             let point1 = new cv.Point(face.x, face.y);
             x = face.x;
             y = face.y;
