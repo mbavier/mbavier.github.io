@@ -40,35 +40,6 @@ utils.loadOpenCv(() => {
     startAndStop.removeAttribute('disabled');
 });
 
-
-
-
-import * as THREE from 'three';
-
-const scene = new THREE.Scene();
-
-let threeWidth = 640;
-let threeHeight = 480;
-
-const camera = new THREE.PerspectiveCamera(75, threeWidth/threeHeight, 0.6, 1200);
-camera.position.z += 3;
-
-const renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setClearColor("#03051a");
-renderer.setSize(threeWidth, threeHeight);
-document.body.appendChild(renderer.domElement);
-
-window.addEventListener('resize', () => {
-    renderer.setSize(threeWidth, threeHeight);
-    camera.aspect = threeWidth / threeHeight;
-    camera.updateProjectionMatrix();
-})
-
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({color: 0xff00000});
-const box = new THREE.Mesh(geometry, material);
-scene.add(box);
-
 let video, src, dst, gray, cap, classifier, faces;
 
 function startVideoProcess() {
@@ -121,43 +92,24 @@ function processFaceVideo() {
         let begin = Date.now();
         // start processing.
         cap.read(src);
-        src.copyTo(dst);
-        cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
-        // detect faces.
-        classifier.detectMultiScale(gray, faces, 1.1, 8, 0);
-        // draw faces.
-        for (let i = 0; i < faces.size(); ++i) {
-            let face = faces.get(i);
-            console.log(face);
-            let point1 = new cv.Point(face.x, face.y);
-            x = face.x;
-            y = face.y;
-            faceWidth = face.width;
-            faceHeight = face.height;
-            let point2 = new cv.Point(face.x + face.width, face.y + face.height);
-            cv.rectangle(dst, point1, point2, [255, 0, 0, 255]);
-        }
-        cv.imshow('canvasOutput', dst);
+        //src.copyTo(dst);
+        let ksize = new cv.Size(3, 3);
+        // You can try more different parameters
+        cv.GaussianBlur(src, dst, ksize, 0, 0, cv.BORDER_DEFAULT);
+
+        cv.cvtColor(dst, gray, cv.COLOR_RGB2GRAY);
+
+        let grad_x = new cv.Mat(); 
+
+        cv.Sobel(gray, grad_x, cv.CV_8U, 1, 0);
+
+        //cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
+        cv.imshow('canvasOutput', grad_x);
         // schedule the next one.
+        
         let delay = 1000/FPS - (Date.now() - begin);
         setTimeout(processFaceVideo, delay);
     } catch (err) {
         utils.printError(err);
     }
 };
-
-const rendering = function() {
-    requestAnimationFrame(rendering);
-    camera.position.x = x/320 * 6 - 3;
-    camera.position.y = (1 - y/240) * 6 - 3;
-    let area = 1- (faceWidth * faceHeight)/19200;
-    camera.position.z = 2 + area*3;
-    camera.lookAt(box.position);
-    renderer.render(scene, camera);
-}
-
-rendering();
-
-function printXY() {
-    console.log("X: ", x, " Y: ", y, " Width: ", faceWidth, " Height: ", faceHeight);
-}
