@@ -49,7 +49,8 @@ function startVideoProcess() {
   cap = new cv.VideoCapture(video);
   faces = new cv.RectVector();
   classifier = new cv.CascadeClassifier();
-
+  let imgElement = document.getElementById("rainbowNoise");
+  mat = cv.imread(imgElement);
   classifier.load('haarcascade_frontalface_default.xml');
   setTimeout(processFaceVideo, 0);
 }
@@ -92,8 +93,7 @@ function processFaceVideo() {
             classifier.delete();
             return;
         }
-        let imgElement = document.getElementById("rainbowNoise");
-        mat = cv.imread(imgElement);
+        
         let begin = Date.now();
         // start processing.
         cap.read(src);
@@ -104,15 +104,14 @@ function processFaceVideo() {
 
         cv.cvtColor(dst, gray, cv.COLOR_RGB2GRAY);
 
-        let grad_x = new cv.Mat(); 
-        let mix = new cv.Mat();
+        let grad_x = new cv.Mat();
 
         cv.Sobel(gray, grad_x, cv.CV_8U, 1, 0);
 
         cv.resize(mat, mat, grad_x.size(), 0, 0, cv.INTER_AREA);
 
         cv.cvtColor(grad_x, grad_x, cv.COLOR_GRAY2RGBA);
-        mat.convertTo(mat, grad_x.type())
+        
 
         console.log('image width: ' + grad_x.cols + '\n' +
             'image height: ' + grad_x.rows + '\n' +
@@ -136,6 +135,9 @@ function processFaceVideo() {
         // schedule the next one.
         
         let delay = 1000/FPS - (Date.now() - begin);
+        grad_x.delete();
+        //dst.delete();
+        //src.delete();
         setTimeout(processFaceVideo, delay);
     } catch (err) {
         utils.printError(err);
