@@ -1,7 +1,6 @@
 let utils = new Utils('errorMessage');
 
 
-
 //utils.loadCode('indexCode', 'codeEditor');
 
 let streaming = false;
@@ -40,7 +39,7 @@ utils.loadOpenCv(() => {
     startAndStop.removeAttribute('disabled');
 });
 
-let video, src, dst, gray, cap, classifier, faces;
+let video, src, dst, gray, cap, classifier, faces, mat;
 
 function startVideoProcess() {
   video = document.getElementById('videoInput');
@@ -50,6 +49,7 @@ function startVideoProcess() {
   cap = new cv.VideoCapture(video);
   faces = new cv.RectVector();
   classifier = new cv.CascadeClassifier();
+
   classifier.load('haarcascade_frontalface_default.xml');
   setTimeout(processFaceVideo, 0);
 }
@@ -78,6 +78,9 @@ function greyProcessVideo() {
 
 let x, y, faceWidth, faceHeight;
 
+
+  
+
 function processFaceVideo() {
     try {
         if (!streaming) {
@@ -89,6 +92,8 @@ function processFaceVideo() {
             classifier.delete();
             return;
         }
+        let imgElement = document.getElementById("rainbowNoise");
+        mat = cv.imread(imgElement);
         let begin = Date.now();
         // start processing.
         cap.read(src);
@@ -100,11 +105,34 @@ function processFaceVideo() {
         cv.cvtColor(dst, gray, cv.COLOR_RGB2GRAY);
 
         let grad_x = new cv.Mat(); 
+        let mix = new cv.Mat();
 
         cv.Sobel(gray, grad_x, cv.CV_8U, 1, 0);
 
+        cv.resize(mat, mat, grad_x.size(), 0, 0, cv.INTER_AREA);
+
+        cv.cvtColor(grad_x, grad_x, cv.COLOR_GRAY2RGBA);
+        mat.convertTo(mat, grad_x.type())
+
+        console.log('image width: ' + grad_x.cols + '\n' +
+            'image height: ' + grad_x.rows + '\n' +
+            'image size: ' + grad_x.size().width + '*' + grad_x.size().height + '\n' +
+            'image depth: ' + grad_x.depth() + '\n' +
+            'image channels ' + grad_x.channels() + '\n' +
+            'image type: ' + grad_x.type() + '\n');
+
+        console.log('image width: ' + mat.cols + '\n' +
+            'image height: ' + mat.rows + '\n' +
+            'image size: ' + mat.size().width + '*' + mat.size().height + '\n' +
+            'image depth: ' + mat.depth() + '\n' +
+            'image channels ' + mat.channels() + '\n' +
+            'image type: ' + mat.type() + '\n');
+
+        cv.multiply(mat, grad_x, dst)
+
+        
         //cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
-        cv.imshow('canvasOutput', grad_x);
+        cv.imshow('canvasOutput', dst);
         // schedule the next one.
         
         let delay = 1000/FPS - (Date.now() - begin);
