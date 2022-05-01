@@ -105,37 +105,33 @@ function processFaceVideo() {
         cv.cvtColor(dst, gray, cv.COLOR_RGB2GRAY);
 
         let grad_x = new cv.Mat();
+        let grad_y = new cv.Mat();
+        let grad = new cv.Mat();
 
         cv.Sobel(gray, grad_x, cv.CV_8U, 1, 0);
+        cv.Sobel(gray, grad_y, cv.CV_8U, 0, 1);
 
-        cv.resize(mat, mat, grad_x.size(), 0, 0, cv.INTER_AREA);
+        cv.add(grad_x, grad_y, grad);
+        grad_x.delete();
+        grad_y.delete();
 
-        cv.cvtColor(grad_x, grad_x, cv.COLOR_GRAY2RGBA);
-        
+        cv.multiply(grad, grad, grad);
 
-        console.log('image width: ' + grad_x.cols + '\n' +
-            'image height: ' + grad_x.rows + '\n' +
-            'image size: ' + grad_x.size().width + '*' + grad_x.size().height + '\n' +
-            'image depth: ' + grad_x.depth() + '\n' +
-            'image channels ' + grad_x.channels() + '\n' +
-            'image type: ' + grad_x.type() + '\n');
+        cv.resize(mat, mat, grad.size(), 0, 0, cv.INTER_AREA);
 
-        console.log('image width: ' + mat.cols + '\n' +
-            'image height: ' + mat.rows + '\n' +
-            'image size: ' + mat.size().width + '*' + mat.size().height + '\n' +
-            'image depth: ' + mat.depth() + '\n' +
-            'image channels ' + mat.channels() + '\n' +
-            'image type: ' + mat.type() + '\n');
-
-        cv.multiply(mat, grad_x, dst)
+        cv.bitwise_not(grad, grad)
+        cv.cvtColor(grad, grad, cv.COLOR_GRAY2RGBA);
 
         
+        cv.add(mat, grad, dst)
+        cv.bitwise_not(dst, dst);
+        cv.add(src, dst, dst);
         //cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
         cv.imshow('canvasOutput', dst);
         // schedule the next one.
         
         let delay = 1000/FPS - (Date.now() - begin);
-        grad_x.delete();
+        grad.delete();
         //dst.delete();
         //src.delete();
         setTimeout(processFaceVideo, delay);
